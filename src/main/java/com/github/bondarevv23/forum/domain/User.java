@@ -31,7 +31,7 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime registeredAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private Set<Post> posts;
 
     @Override

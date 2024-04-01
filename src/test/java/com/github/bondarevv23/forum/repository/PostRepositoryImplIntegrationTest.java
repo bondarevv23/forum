@@ -65,7 +65,7 @@ public class PostRepositoryImplIntegrationTest {
     }
 
     @Test
-    void whenFindPostByWWrongId_thenMethodReturnsEmptyOptional() {
+    void whenFindPostByWrongId_thenMethodReturnsEmptyOptional() {
         // given
         var wrongId = -1L;
 
