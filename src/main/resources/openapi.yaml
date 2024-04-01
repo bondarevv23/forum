@@ -1,0 +1,496 @@
+openapi: 3.1.0
+info:
+  title: Forum
+  description: OpenAPI secification for forum
+  contact:
+    name: Vladimir Bondarev
+    email: bondarevv9123@gmail.com
+    url: https://github.com/bondarevv23
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/feedback
+    description: development url
+tags:
+  - name: User
+    description: User service endpoints
+  - name: Post
+    description: Post service endpoints
+paths:
+  /api/v1/users/{id}:
+    get:
+      summary: get user
+      description: get user by id
+      operationId: findUserById
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          description: id to search
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: successfull request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        404:
+          description: user with passed id doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        400:
+          description: error converting the passed parameter to id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: update user
+      description: update user by id
+      operationId: updateUserById
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          description: id to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: updated user data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        200:
+          description: user successfully updated
+        400:
+          description: invalid data passed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: user with passed id doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        409:
+          description: the request conflicts with the server state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: delete user
+      description: delete user by id
+      operationId: deleteUserById
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          description: id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: user successfully deleted
+        400:
+          description: error converting the passed parameter to id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: unknown user id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+
+  /api/v1/users/:
+    post:
+      summary: rigister new user
+      description: register new user by passed data
+      operationId: register
+      tags:
+        - User
+      requestBody:
+        description: new user data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        200:
+          description: user successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        400:
+          description: invalid data passed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: the request conflicts with the server state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: get all users
+      description: get all stored users
+      operationId: findAllUsers
+      tags:
+        - User
+      responses:
+        200:
+          description: list of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
+  /api/v1/posts/{id}:
+    get:
+      summary: get post
+      description: get post by id
+      operationId: findPostById
+      tags:
+        - Post
+      parameters:
+        - name: id
+          in: path
+          description: id to search
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: successfull request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDTO'
+        404:
+          description: post with passed id doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        400:
+          description: error converting the passed parameter to id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: update post
+      description: update post by id
+      operationId: updatePostById
+      tags:
+        - Post
+      parameters:
+        - name: id
+          in: path
+          description: id to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: updated post data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostRequest'
+      responses:
+        200:
+          description: post successfully updated
+        400:
+          description: invalid data passed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: post with passed id doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        409:
+          description: the request conflicts with the server state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: delete post
+      description: delete post by id
+      operationId: deletePostById
+      tags:
+        - Post
+      parameters:
+        - name: id
+          in: path
+          description: id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: post successfully deleted
+        400:
+          description: error converting the passed parameter to id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: unknown post id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+  /api/v1/posts:
+    post:
+      summary: write new post
+      description: write new user by passed data
+      operationId: write
+      tags:
+        - Post
+      requestBody:
+        description: new post data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WritePostRequest'
+      responses:
+        200:
+          description: post successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDTO'
+        400:
+          description: invalid data passed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: the request conflicts with the server state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: get all posts
+      description: get all stored posts
+      operationId: findAllPosts
+      tags:
+        - Post
+      responses:
+        200:
+          description: list of all posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostDTO'
+  /api/v1/posts/author/{authorId}:
+    get:
+      summary: get all posts by author
+      description: get all stored posts by author
+      operationId: findAllPostsByAuthor
+      tags:
+        - Post
+      parameters:
+        - name: authorId
+          in: path
+          description: id of author
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: list of all posts written by the author
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostDTO'
+        404:
+          description: user with this id doesn't exist
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotFoundResponse'
+        400:
+          description: error converting the passed parameter to id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    UserDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nickname:
+          type: string
+        email:
+          type: string
+        registered_at:
+          type: string
+          format: date-time
+      examples:
+        - id: 123
+          nickname: user2001
+          email: email@example.com
+          registered_at: "2024-03-11T12:01:57"
+        - id: 48
+          nickname: games8565
+          email: games@example.com
+          registered_at: "2017-01-29T00:41:19"
+    UserRequest:
+      type: object
+      properties:
+        nickname:
+          type: string
+          minLength: 5
+          nullable: false
+        email:
+          type: string
+          format: email
+          nullable: false
+      examples:
+        - nickname: user2001
+          email: email@example.com
+        - nickname: games8565
+          email: games@example.com
+      required:
+        - nickname
+        - email
+    PostDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        text:
+          type: string
+        author_id:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      examples:
+        - id: 123
+          title: my first post
+          text: text of my first post
+          author_id: 456
+          created_at: "2024-01-23T02:03:59"
+          updated_at: "2024-01-23T03:48:11"
+    WritePostRequest:
+      type: object
+      properties:
+        author_id:
+          type: integer
+          format: int64
+          nullable: false
+        title:
+          type: string
+          nullable: false
+        text:
+          type: string
+          nullable: false
+      examples:
+        - author_id: 123
+          title: my first post
+          text: text of my first post
+      required:
+        - author_id
+        - title
+        - text
+    UpdatePostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: false
+        text:
+          type: string
+          nullable: false
+      examples:
+        - title: my updated first post
+          text: text of my updated first post
+      required:
+        - title
+        - text
+    NotFoundResponse:
+      type: object
+      properties:
+        passed_id:
+          type: integer
+          format: int64
+        error_message:
+          type: string
+      examples:
+        - passed_id: 101
+          error_message: user with id 101 doesn't exist
+    ErrorResponse:
+      type: object
+      properties:
+        error_message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+      examples:
+        - error_message: invalid user data passed
+          errors:
+            - wrong email 'emailgmail.com' passed
+        - error_message: invalid user data passed
+          errors:
+            - nickname 'games8565' already exists

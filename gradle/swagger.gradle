@@ -1,0 +1,44 @@
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/openapi.yaml"
+    outputDir = "$rootDir"
+    apiPackage = "com.github.bondarevv23.forum.controller.api"
+    modelPackage = "com.github.bondarevv23.forum.domain.generated"
+    validateSpec = true
+    configOptions.set([
+            sourceFolder:"src/main/java",
+            dateLibrary: "java8-localdatetime",
+            serializableModel: "true",
+            interfaceOnly: "true",
+            hideGenerationTimestamp: "true",
+            useBeanValidation: "true",
+            generateSupportingFiles: "false",
+            swaggerDocketConfig: "false",
+            useTags: "true",
+            openApiNullable: "false",
+            additionalModelTypeAnnotations: "@lombok.Builder",
+            skipDefaultInterface: "true",
+            useSpringBoot3: "true",
+            useSpringController: "true",
+            performBeanValidation: "true"
+    ])
+    globalProperties.set([
+            apiTests: "false",
+            modelTests: "false",
+            apiDocs: "false",
+            modelDocs: "false"
+    ])
+}
+
+compileJava.dependsOn("openApiGenerate")
+processResources.dependsOn("openApiGenerate")
+
+tasks.openApiGenerate {
+    doLast {
+        delete (
+                "$rootDir/.openapi-generator",
+                "$rootDir/README.md",
+                "$rootDir/pom.xml"
+        )
+    }
+}
