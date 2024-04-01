@@ -5,5 +5,9 @@ spring:
     password: postgres
     url: jdbc:postgresql://localhost:5432/forum_db
 
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
 server:
   port: 8080

@@ -40,7 +40,7 @@ public class PostRepositoryImplIntegrationTest {
 
     @BeforeEach
     void initAuthor() {
-        author = userRepository.register(getUser(1));
+        author = userRepository.save(getUser(1));
     }
 
     @AfterEach
@@ -54,7 +54,7 @@ public class PostRepositoryImplIntegrationTest {
     void whenFindPostByIdAndPostExists_thenMethodReturnsPost() {
         // given
         var post = getPost(author);
-        post = repository.write(post);
+        post = repository.save(post);
 
         // when
         var stored = repository.findById(post.getId());
@@ -81,7 +81,7 @@ public class PostRepositoryImplIntegrationTest {
     @Rollback
     void whenDeletePostById_theRepositoryDeletesPost() {
         // given
-        var post = repository.write(getPost(author));
+        var post = repository.save(getPost(author));
 
         // when
         repository.deleteById(post.getId());
@@ -100,7 +100,7 @@ public class PostRepositoryImplIntegrationTest {
         var postComparator = Comparator.comparingLong(Post::getId);
         var posts = LongStream.range(1, n + 1)
                 .mapToObj(i -> getPost(author, i))
-                .map(repository::write)
+                .map(repository::save)
                 .sorted(postComparator)
                 .toList();
 
@@ -120,12 +120,12 @@ public class PostRepositoryImplIntegrationTest {
         var postComparator = Comparator.comparingLong(Post::getId);
         var posts = LongStream.range(1, n + 1)
                 .mapToObj(i -> getPost(author, i))
-                .map(repository::write)
+                .map(repository::save)
                 .sorted(postComparator)
                 .toList();
         LongStream.range(1, n + 1)
-                .mapToObj(i -> getPost(userRepository.register(getUser(i)), i))
-                .forEach(repository::write);
+                .mapToObj(i -> getPost(userRepository.save(getUser(i)), i))
+                .forEach(repository::save);
 
         // when
         var stored = repository.findAllByAuthorId(author.getId());
@@ -139,7 +139,7 @@ public class PostRepositoryImplIntegrationTest {
     @Rollback
     void whenWriteNewPost_thenPostSavedToRepository() {
         // given
-        var post = repository.write(getPost(author));
+        var post = repository.save(getPost(author));
 
         // when
         var stored = repository.findById(post.getId());
@@ -159,7 +159,7 @@ public class PostRepositoryImplIntegrationTest {
         // when
 
         // then
-        assertThatThrownBy(() -> repository.write(post)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> repository.save(post)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -167,12 +167,12 @@ public class PostRepositoryImplIntegrationTest {
     @Rollback
     void whenUpdatePost_thenNewPostDataStored() {
         // given
-        var post = repository.write(getPost(author));
+        var post = repository.save(getPost(author));
 
         // when
         post.setText("new test");
         post.setTitle("new title");
-        repository.update(post);
+        repository.save(post);
 
         // then
         var stored = repository.findById(post.getId());

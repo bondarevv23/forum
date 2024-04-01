@@ -36,6 +36,7 @@ processResources.dependsOn("openApiGenerate")
 tasks.openApiGenerate {
     doLast {
         delete (
+                "$rootDir/.openapi-generator-ignore",
                 "$rootDir/.openapi-generator",
                 "$rootDir/README.md",
                 "$rootDir/pom.xml"

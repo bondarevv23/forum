@@ -1,22 +1,13 @@
 package com.github.bondarevv23.forum.repository;
 
 import com.github.bondarevv23.forum.domain.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PostRepository {
-
-    Optional<Post> findById(Long id);
-
-    void deleteById(Long id);
-
-    List<Post> findAll();
+public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByAuthorId(Long authorId);
-
-    Post write(Post post);
-
-    void update(Post post);
 
 }

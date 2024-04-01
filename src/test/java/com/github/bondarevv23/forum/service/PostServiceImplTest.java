@@ -4,6 +4,7 @@ import com.github.bondarevv23.forum.domain.Post;
 import com.github.bondarevv23.forum.domain.User;
 import com.github.bondarevv23.forum.exception.UserNotFoundException;
 import com.github.bondarevv23.forum.repository.PostRepository;
+import com.github.bondarevv23.forum.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -11,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.Profile;
+
+import java.util.Optional;
 
 import static com.github.bondarevv23.forum.test_util.PostGenerator.*;
 import static com.github.bondarevv23.forum.test_util.UserGenerator.getStoredUser;
@@ -25,10 +28,13 @@ public class PostServiceImplTest {
     @Mock
     PostRepository repository;
 
+    @Mock
+    UserRepository userRepository;
+
     @InjectMocks
     PostServiceImpl service;
 
-    private User author = getStoredUser(1L).orElseThrow();
+    private final User author = getStoredUser(1L).orElseThrow();
 
     @Test
     void whenDeletePostByWrightId_thenDeleteAndFindRepositoryMethodsAreCalled() {
@@ -96,16 +102,17 @@ public class PostServiceImplTest {
         // given
         var request = getWritePostRequest(author, 1L);
         var captor = ArgumentCaptor.forClass(Post.class);
-        when(repository.write(any(Post.class))).thenReturn(getStoredPost(author, 1L).orElseThrow());
+        when(repository.save(any(Post.class))).thenReturn(getStoredPost(author, 1L).orElseThrow());
+        when(userRepository.findById(1L)).thenReturn(Optional.of(author));
 
         // when
         service.write(request);
 
         // then
-        verify(repository, times(1)).write(captor.capture());
+        verify(repository, times(1)).save(captor.capture());
         assertThat(request.getTitle()).isEqualTo(captor.getValue().getTitle());
         assertThat(request.getText()).isEqualTo(captor.getValue().getText());
-        assertThat(request.getAuthorId()).isEqualTo(captor.getValue().getAuthorId());
+        assertThat(request.getAuthorId()).isEqualTo(captor.getValue().getAuthor().getId());
     }
 
     @Test
@@ -119,7 +126,7 @@ public class PostServiceImplTest {
         service.updateById(1L, request);
 
         // then
-        verify(repository).update(captor.capture());
+        verify(repository).save(captor.capture());
         assertThat(captor.getValue().getTitle()).isEqualTo(request.getTitle());
         assertThat(captor.getValue().getText()).isEqualTo(request.getText());
     }

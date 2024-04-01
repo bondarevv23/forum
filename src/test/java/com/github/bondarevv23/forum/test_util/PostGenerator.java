@@ -14,7 +14,7 @@ public class PostGenerator {
 
     public static Post getPost(User author, long i) {
         return Post.builder()
-                .authorId(author.getId())
+                .author(author)
                 .title("title_" + i)
                 .text("text_" + i)
                 .createdAt(CREATED_AT)

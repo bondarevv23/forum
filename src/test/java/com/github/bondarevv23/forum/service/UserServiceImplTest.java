@@ -101,13 +101,13 @@ public class UserServiceImplTest {
         // given
         var captor = ArgumentCaptor.forClass(User.class);
         var request = getUserRequest(1L);
-        when(repository.register(any(User.class))).thenReturn(getStoredUser(1L).orElseThrow());
+        when(repository.save(any(User.class))).thenReturn(getStoredUser(1L).orElseThrow());
 
         // when
         service.register(request);
 
         // then
-        verify(repository).register(captor.capture());
+        verify(repository).save(captor.capture());
         var capturedUser = captor.getValue();
         assertThat(request.getEmail()).isEqualTo(capturedUser.getEmail());
         assertThat(request.getNickname()).isEqualTo(capturedUser.getNickname());
@@ -125,7 +125,7 @@ public class UserServiceImplTest {
         service.updateById(1L, request);
 
         // then
-        verify(repository).update(captor.capture());
+        verify(repository).save(captor.capture());
         assertThat(captor.getValue().getEmail()).isEqualTo(request.getEmail());
         assertThat(captor.getValue().getNickname()).isEqualTo(request.getNickname());
     }

@@ -38,7 +38,7 @@ public class UserRepositoryImplIntegrationTest {
     void whenFindUserByIdAndUserExists_thenMethodReturnsUser() {
         // given
         var user = getUser(1);
-        user = repository.register(user);
+        user = repository.save(user);
 
         // when
         var stored = repository.findById(user.getId());
@@ -66,7 +66,7 @@ public class UserRepositoryImplIntegrationTest {
     void whenDeleteById_thenRepositoryDeletesUser() {
         // given
         var user = getUser();
-        user = repository.register(user);
+        user = repository.save(user);
 
         // when
         repository.deleteById(user.getId());
@@ -85,7 +85,7 @@ public class UserRepositoryImplIntegrationTest {
         var userComparator = Comparator.comparingLong(User::getId);
         var users = LongStream.range(1, n + 1)
                 .mapToObj(UserGenerator::getUser)
-                .map(repository::register)
+                .map(repository::save)
                 .sorted(userComparator)
                 .collect(Collectors.toList());
 
@@ -105,7 +105,7 @@ public class UserRepositoryImplIntegrationTest {
         var newUser = getUser();
 
         // when
-        newUser = repository.register(newUser);
+        newUser = repository.save(newUser);
 
         // then
         var stored = repository.findById(newUser.getId());
@@ -118,12 +118,12 @@ public class UserRepositoryImplIntegrationTest {
     @Rollback
     void whenUpdateUser_thenUpdatedUserIsStored() {
         // given
-        var user = repository.register(getUser());
+        var user = repository.save(getUser());
 
         // when
         user.setEmail("new_email@mail.com");
         user.setNickname("new_nickname");
-        repository.update(user);
+        repository.save(user);
 
         // then
         var stored = repository.findById(user.getId());

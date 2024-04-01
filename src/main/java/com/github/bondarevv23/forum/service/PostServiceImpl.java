@@ -1,11 +1,14 @@
 package com.github.bondarevv23.forum.service;
 
 import com.github.bondarevv23.forum.domain.Post;
+import com.github.bondarevv23.forum.domain.User;
 import com.github.bondarevv23.forum.domain.generated.PostDTO;
 import com.github.bondarevv23.forum.domain.generated.UpdatePostRequest;
 import com.github.bondarevv23.forum.domain.generated.WritePostRequest;
 import com.github.bondarevv23.forum.exception.PostNotFoundException;
+import com.github.bondarevv23.forum.exception.UserNotFoundException;
 import com.github.bondarevv23.forum.repository.PostRepository;
+import com.github.bondarevv23.forum.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -21,6 +24,7 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository repository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -61,7 +65,7 @@ public class PostServiceImpl implements PostService {
     public PostDTO updateById(Long id, UpdatePostRequest updatePostRequest) {
         Post stored = getOrThrow(id);
         Post updated = updatePostByRequest(stored, updatePostRequest);
-        repository.update(updated);
+        repository.save(updated);
         return postToPostDTO(updated);
     }
 
@@ -69,7 +73,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostDTO write(WritePostRequest writePostRequest) {
         Post post = writeRequestToPost(writePostRequest);
-        post = repository.write(post);
+        post = repository.save(post);
         return postToPostDTO(post);
     }
 
@@ -82,15 +86,19 @@ public class PostServiceImpl implements PostService {
                 .id(post.getId())
                 .title(post.getTitle())
                 .text(post.getText())
-                .authorId(post.getAuthorId())
+                .authorId(post.getAuthor().getId())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
     }
 
+    private User getUser(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    }
+
     private Post writeRequestToPost(WritePostRequest request) {
         return Post.builder()
-                .authorId(request.getAuthorId())
+                .author(getUser(request.getAuthorId()))
                 .title(request.getTitle())
                 .text(request.getText())
                 .createdAt(LocalDateTime.now())

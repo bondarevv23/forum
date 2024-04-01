@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDTO register(UserRequest userRequest) {
         User user = userRequestToUser(userRequest);
-        return userToUserDTO(repository.register(user));
+        return userToUserDTO(repository.save(user));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateById(Long id, UserRequest userRequest) {
         User stored = getOrThrow(id);
         User updated = updateUserByRequest(stored, userRequest);
-        repository.update(updated);
+        repository.save(updated);
         return userToUserDTO(updated);
     }
 
