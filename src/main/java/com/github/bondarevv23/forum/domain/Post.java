@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+
+import static com.github.bondarevv23.forum.util.HibernateUtil.getEffectiveClass;
 
 @Entity
 @Builder
@@ -33,4 +36,24 @@ public class Post {
     @Builder.Default
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @Override
+    public final boolean equals(Object that) {
+        if (this == that) {
+            return true;
+        }
+        if (that == null) {
+            return false;
+        }
+        if (getEffectiveClass(this) != getEffectiveClass(that)) {
+            return false;
+        }
+        User user = (User) that;
+        return getId() != null && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return getEffectiveClass(this).hashCode();
+    }
 }
